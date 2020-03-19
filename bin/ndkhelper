@@ -27,7 +27,7 @@ then
     eval ${param}=true
 fi
 
-vv="v1.0.0"
+vv="1.0.0"
 usage="usage: ndkhelper --list | --help | --install rxx[r16d] | --uninstall | --version"
 if [[ $# -lt 1 || ${help} == "true" ]] ;
 then
