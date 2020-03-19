@@ -1,2 +1,2 @@
-# homebrew-ndkhelper
-tools to manager Android NDK versions
+# homebrew-tapir
+tools to manager some utils-tool for MacOS
