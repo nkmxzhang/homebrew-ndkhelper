@@ -1,10 +1,8 @@
 #!/bin/sh
 for arg do
-    if [[ ${arg} == --* ]] ;
-    then
+    if [[ ${arg} == --* ]] ; then
         #last param is --, set to true
-        if [[ ${param} == --* ]] ;
-        then
+        if [[ ${param} == --* ]] ; then
             param=${param:2}
             eval ${param}=true
         fi
@@ -12,8 +10,7 @@ for arg do
         param=${arg}
     else
         #current param is not --
-        if [[ ${param} == --* ]] ;
-        then
+        if [[ ${param} == --* ]] ; then
             ##last param is --, set value to current param
             param=${param:2}
             eval ${param}=${arg}
@@ -21,37 +18,35 @@ for arg do
     fi
 done
 #check last param
-if [[ ${param} == --* ]] ;
-then
+if [[ ${param} == --* ]] ; then
     param=${param:2}
     eval ${param}=true
 fi
 
 vv="1.0.0"
 usage="usage: ndkhelper --list | --help | --install rxx[r16d] | --uninstall | --version"
-if [[ $# -lt 1 || ${help} == "true" ]] ;
-then
+if [[ $# -lt 1 || ${help} == "true" ]] ; then
     echo ${usage}
     exit 1
 fi
 
-if [[ ${version} == "true" ]] ;
-then
+if [[ ${version} == "true" ]] ; then
 	echo ${vv}
 fi
 
-if [[ ${show} == "true" ]] ;
-then
-	if [[ ! -d "${NDK_ROOT}" ]] ;
-	then
+if [[ ${show} == "true" ]] ; then
+	if [[ ! -d "${NDK_ROOT}" ]] ; then
 		echo "android ndk not installed. use ndkhelper --install rxx first."
 	else
-		cat ${NDK_ROOT}/RELEASE.TXT
+		if [[ -f ${NDK_ROOT}/RELEASE.TXT ]] ; then
+			cat ${NDK_ROOT}/RELEASE.TXT
+		else
+			cat ${NDK_ROOT}/source.properties | grep Pkg.Revision | awk '{ print $3 }'
+		fi
 	fi
 fi
 
-if [[ ${list} == "true" ]] ;
-then
+if [[ ${list} == "true" ]] ; then
 	ndk_list=""
 	ndk_dir_prefix="android-ndk-"
 	for file in ${ANDROID_SDK_ROOT}/${ndk_dir_prefix}* ;
@@ -63,31 +58,26 @@ then
 	echo "${ndk_list}"
 fi
 
-if [[ ${uninstall} == "true" ]] ;
-then	
-	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ;
-	then
+if [[ ${uninstall} == "true" ]] ; then	
+	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ; then
 		ndk_version=`cat ${NDK_ROOT}/RELEASE.TXT`
 		rm ${ANDROID_SDK_ROOT}/ndk-bundle
 		echo "uninstall android ndk ${ndk_version}"
 	fi
 fi
 
-if [[ -n "${install}" ]] ;
-then
+if [[ -n "${install}" ]] ; then
 	echo "install android ndk: ${install}"
 	if [ $# -lt 2 ] ; then
 	    echo ${usage}
 	    exit 1
 	fi
 
-	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ;
-	then
+	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ; then
 		rm ${ANDROID_SDK_ROOT}/ndk-bundle
 	fi
 	ndk_dir=${ANDROID_SDK_ROOT}/android-ndk-${install}
-	if [[ ! -d "${ndk_dir}" ]] ;
-	then
+	if [[ ! -d "${ndk_dir}" ]] ; then
 		echo "error, ${ndk_dir} is not exist."
 		exit 1
 	fi
