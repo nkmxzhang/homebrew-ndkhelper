@@ -23,27 +23,40 @@ if [[ ${param} == --* ]] ; then
     eval ${param}=true
 fi
 
-usage="usage: ndkhelper --list | --help | --install rxx[r16d] | --uninstall | --version"
+vv="1.0.3"
+usage="usage: ndkhelper --list | --help | --install rxx[r16d] | --uninstall | --version | --show|info"
 if [[ $# -lt 1 || ${help} == "true" ]] ; then
     echo ${usage}
     exit 1
 fi
 
 if [[ ${version} == "true" ]] ; then
-	ndk_version=$(cat ${NDK_ROOT}/RELEASE.TXT)
-	echo ${ndk_version}
+	echo ${vv}
 fi
 
-if [[ ${show} == "true" ]] ; then
+function getInfo {
 	if [[ ! -d "${NDK_ROOT}" ]] ; then
 		echo "android ndk not installed. use ndkhelper --install rxx first."
 	else
-		if [[ -f ${NDK_ROOT}/RELEASE.TXT ]] ; then
-			cat ${NDK_ROOT}/RELEASE.TXT
+		ndk_path=($(ls -la "$NDK_ROOT"))
+		ndk_path=${ndk_path[${#ndk_path[@]}-1]}
+		ndk_name=${ndk_path##*-}
+
+		if [[ -f "${NDK_ROOT}/RELEASE.TXT" ]] ; then
+			info=($(tail -n -1 "$NDK_ROOT/RELEASE.TXT"))
+			eval "$1=${ndk_name}[${info[0]}]"
+		elif [[ -f "${NDK_ROOT}/source.properties" ]]; then
+			info=($(tail -n -1 "$NDK_ROOT/source.properties"))
+			eval "$1=${ndk_name}[${info[${#info[@]}-1]}]"
 		else
-			cat ${NDK_ROOT}/source.properties | grep Pkg.Revision | awk '{ print $3 }'
+			echo "android ndk unknown. without both RELEASE.TXT and source.properties."
 		fi
 	fi
+}
+
+if [[ ${show} == "true" || ${info} == "true" ]] ; then
+	getInfo ndk_info
+	echo "${ndk_info}"
 fi
 
 if [[ ${list} == "true" ]] ; then
@@ -60,7 +73,7 @@ fi
 
 if [[ ${uninstall} == "true" ]] ; then	
 	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ; then
-		ndk_version=$(cat ${NDK_ROOT}/RELEASE.TXT)
+		getInfo ndk_version
 		rm ${ANDROID_SDK_ROOT}/ndk-bundle
 		echo "uninstall android ndk ${ndk_version}"
 	fi
