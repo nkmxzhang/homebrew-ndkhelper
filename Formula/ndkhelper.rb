@@ -4,9 +4,9 @@
 class Ndkhelper < Formula
   desc "tools to manager Android NDK versions"
   homepage "https://github.com/nkmxzhang/homebrew-tapir"
-  url "https://github.com/nkmxzhang/homebrew-tapir/releases/download/1.0.1/ndkhelper"
+  url "https://github.com/nkmxzhang/homebrew-tapir/releases/download/1.0.2/ndkhelper"
   sha256 "b4d0c9c05a0bc5d957bee83cf89b1ce88a7d75db3e94c6fe57413b9479e1b701"
-  version "v1.0.1"
+  version "v1.0.2"
 
   # depends_on "cmake" => :build
 

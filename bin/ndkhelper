@@ -23,7 +23,6 @@ if [[ ${param} == --* ]] ; then
     eval ${param}=true
 fi
 
-vv="1.0.0"
 usage="usage: ndkhelper --list | --help | --install rxx[r16d] | --uninstall | --version"
 if [[ $# -lt 1 || ${help} == "true" ]] ; then
     echo ${usage}
@@ -31,7 +30,8 @@ if [[ $# -lt 1 || ${help} == "true" ]] ; then
 fi
 
 if [[ ${version} == "true" ]] ; then
-	echo ${vv}
+	ndk_version=$(cat ${NDK_ROOT}/RELEASE.TXT)
+	echo ${ndk_version}
 fi
 
 if [[ ${show} == "true" ]] ; then
@@ -60,7 +60,7 @@ fi
 
 if [[ ${uninstall} == "true" ]] ; then	
 	if [[ -d "${ANDROID_SDK_ROOT}/ndk-bundle" ]] ; then
-		ndk_version=`cat ${NDK_ROOT}/RELEASE.TXT`
+		ndk_version=$(cat ${NDK_ROOT}/RELEASE.TXT)
 		rm ${ANDROID_SDK_ROOT}/ndk-bundle
 		echo "uninstall android ndk ${ndk_version}"
 	fi
